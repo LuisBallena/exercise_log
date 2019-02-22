@@ -6,12 +6,12 @@ package com.example.belatrix;
  * @author Luis Alonso Ballena Garcia
  */
 
-public enum  EnumAppender {
-    CONSOLE,FILE,DATABASE;
+public enum EnumAppender {
+    CONSOLE, FILE, DATABASE;
 
-    public static EnumAppender getByName(String name){
-        for(EnumAppender appender : EnumAppender.values()){
-            if(name.equalsIgnoreCase(appender.name())){
+    public static EnumAppender getByName(String name) {
+        for (EnumAppender appender : EnumAppender.values()) {
+            if (name.equalsIgnoreCase(appender.name())) {
                 return appender;
             }
         }

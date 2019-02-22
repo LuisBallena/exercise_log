@@ -9,6 +9,7 @@ package com.example.belatrix;
 public class ParamAppender {
 
     public static String DIRECTORY = "logFileFolder";
+    public static String FILENAME = "filename";
     public static String DATABASE_USER = "user";
     public static String DATABASE_PASSWORD = "password";
     public static String DATABASE_URL = "url";

@@ -6,6 +6,6 @@ package com.example.belatrix;
  * @author Luis Alonso Ballena Garcia
  */
 
-public enum  EnumLevel {
-    INFO,WARNING,ERROR;
+public enum EnumLevel {
+    INFO, WARNING, ERROR
 }

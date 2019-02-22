@@ -2,6 +2,7 @@ package com.example.belatrix;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
@@ -16,6 +17,8 @@ import java.util.Properties;
 public class DatabaseAppender extends Appender {
 
     private Connection connection;
+    private static String DATABASE_USER = "user";
+    private static String DATABASE_PASSWORD= "password";
 
     public DatabaseAppender(Map params) {
         super(params);
@@ -30,19 +33,21 @@ public class DatabaseAppender extends Appender {
     }
 
     public void write(String message, EnumLevel level) {
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(String.format("insert into LOG_VALUES(message,log_level) values ('%s','%d');",message,
-                    level.ordinal()));
+        String insertSql = "insert into LOG_VALUES(message,log_level) values (?,?);";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertSql)) {
+            preparedStatement.setString(1,message);
+            preparedStatement.setInt(2,level.ordinal());
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); //practical case
         }
     }
 
     private Connection initDatabase() throws SQLException {
         Connection connection = null;
         Properties connectionProps = new Properties();
-        connectionProps.put("user", super.params.get(ParamAppender.DATABASE_USER));
-        connectionProps.put("password", super.params.get(ParamAppender.DATABASE_PASSWORD));
+        connectionProps.put(DATABASE_USER, super.params.get(ParamAppender.DATABASE_USER));
+        connectionProps.put(DATABASE_PASSWORD, super.params.get(ParamAppender.DATABASE_PASSWORD));
         connection = DriverManager.getConnection("jdbc:" + super.params.get(ParamAppender.DATABASE_URL)
                 + ":" + super.params.get(ParamAppender.DATABASE_PORT) + "/", connectionProps);
         return connection;

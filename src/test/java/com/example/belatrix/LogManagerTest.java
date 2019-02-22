@@ -37,6 +37,7 @@ public class LogManagerTest {
     private String DATABASE_PORT = "";
     private String DATABASE_USER = "sa";
     private String DATABASE_PASSWORD = "";
+    private String FILENAME = "logFile.txt";
 
     @Test
     public void shouldViewInConsole() {
@@ -61,12 +62,13 @@ public class LogManagerTest {
     public void shouldViewInFile() throws IOException {
         Map<String, String> params = new HashMap();
         params.put(ParamAppender.DIRECTORY, temporaryFolder.getRoot().getPath());
+        params.put(ParamAppender.FILENAME, FILENAME);
         EnumLevel rootLevel = EnumLevel.INFO;
         LogManager logManager = new LogManager(new String[]{"File"}, params, rootLevel);
         logManager.log("Hello File INFO", EnumLevel.INFO);
         logManager.log("Hello File WARNING", EnumLevel.WARNING);
         logManager.log("Hello File ERROR", EnumLevel.ERROR);
-        File file = new File( temporaryFolder.getRoot().getPath()+"\\logFile.txt");
+        File file = new File( temporaryFolder.getRoot().getPath()+File.separator+FILENAME);
         Assert.assertTrue(file.exists());
         byte[] data = Files.readAllBytes(Paths.get(file.toURI()));
         Assert.assertTrue(new String(data).contains("Hello File INFO"));
@@ -104,13 +106,14 @@ public class LogManagerTest {
     public void shouldViewInConsoleAndFile() throws IOException {
         Map<String, String> params = new HashMap();
         params.put(ParamAppender.DIRECTORY, temporaryFolder.getRoot().getPath());
+        params.put(ParamAppender.FILENAME, FILENAME);
         EnumLevel rootLevel = EnumLevel.INFO;
         LogManager logManager = new LogManager(new String[]{"Console","file"}, params, rootLevel);
         logManager.log("HELLO CONSOLE & File INFO", EnumLevel.INFO);
         Handler[] handlers = Logger.getLogger(ConsoleAppender.class.getName()).getHandlers();
         Handler handler = obtainConsoleHandler(handlers);
         Assert.assertNotNull(handler);
-        File file = new File( temporaryFolder.getRoot().getPath()+"\\logFile.txt");
+        File file = new File( temporaryFolder.getRoot().getPath()+File.separator+FILENAME);
         Assert.assertTrue(file.exists());
         byte[] data = Files.readAllBytes(Paths.get(file.toURI()));
         Assert.assertTrue(new String(data).contains("HELLO CONSOLE & File INFO"));
@@ -120,6 +123,7 @@ public class LogManagerTest {
     public void shouldViewInConsoleAndFileAndDatabase() throws Exception {
         Map<String, String> params = new HashMap();
         params.put(ParamAppender.DIRECTORY, temporaryFolder.getRoot().getPath());
+        params.put(ParamAppender.FILENAME, FILENAME);
         params.put(ParamAppender.DATABASE_URL, DATABASE_URL);
         params.put(ParamAppender.DATABASE_PORT, DATABASE_PORT);
         params.put(ParamAppender.DATABASE_USER, DATABASE_USER);
@@ -131,7 +135,7 @@ public class LogManagerTest {
         Handler[] handlers = Logger.getLogger(ConsoleAppender.class.getName()).getHandlers();
         Handler handler = obtainConsoleHandler(handlers);
         Assert.assertNotNull(handler);
-        File file = new File( temporaryFolder.getRoot().getPath()+"\\logFile.txt");
+        File file = new File( temporaryFolder.getRoot().getPath()+File.separator+FILENAME);
         Assert.assertTrue(file.exists());
         byte[] data = Files.readAllBytes(Paths.get(file.toURI()));
         Assert.assertTrue(new String(data).contains("HELLO CONSOLE & File & Database"));

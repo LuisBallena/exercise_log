@@ -26,20 +26,22 @@ public class FileAppender extends Appender {
     public void init() {
         try {
             createFile();
-            fh = new FileHandler(super.params.get(ParamAppender.DIRECTORY) + "/logFile.txt");
+            fh = new FileHandler(String.format("%s%s%s", super.params.get(ParamAppender.DIRECTORY), File.separator,
+                    super.params.get(ParamAppender.FILENAME)));
             fh.setFormatter(new SimpleFormatter());
         } catch (IOException e) {
-            new RuntimeException("FileAppender failed", e);
+            throw new RuntimeException("FileAppender failed", e);
         }
-        this.logger.addHandler(fh);
+        logger.addHandler(fh);
     }
 
-    public void write( String message, EnumLevel enumLevel) {
-        this.logger.log(Level.INFO, message); // level anywhere (practical case)
+    public void write(String message, EnumLevel enumLevel) {
+        logger.log(Level.INFO, message); // level anywhere (practical case)
     }
 
     private void createFile() throws IOException {
-        File logFile = new File(super.params.get("logFileFolder") + "/logFile.txt");
+        File logFile = new File(String.format("%s%s%s", super.params.get(ParamAppender.DIRECTORY), File.separator,
+                super.params.get(ParamAppender.FILENAME)));
         if (!logFile.exists()) {
             logFile.createNewFile();
         }
